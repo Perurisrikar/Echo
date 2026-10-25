@@ -1,0 +1,29 @@
+name: Lint
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: PHP syntax
+        run: |
+          fail=0
+          while IFS= read -r f; do php -l "$f" >/dev/null || fail=1; done < <(find htdocs -name '*.php')
+          exit $fail
+      - name: JavaScript syntax
+        run: |
+          for f in htdocs/assets/*.js htdocs/sw.js; do node --check "$f"; done
+      - name: No inline scripts or handlers (the CSP forbids them)
+        run: |
+          if grep -rnP '<script(?![^>]*(src=|type="application/json"))' htdocs --include=*.php | grep -v '^htdocs/private'; then echo "inline <script> found"; exit 1; fi
+          if grep -rnEi ' on(click|change|submit|load|error)=' htdocs --include=*.php; then echo "inline handler found"; exit 1; fi
+      - name: No committed secrets or real data
+        run: |
+          test ! -f htdocs/private/config.php
+          test ! -f htdocs/data/attendance.json

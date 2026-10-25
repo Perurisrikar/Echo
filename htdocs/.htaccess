@@ -1,0 +1,35 @@
+Options -Indexes
+
+# Correct types for the installable-app files (some hosts don't know .webmanifest).
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest
+    AddType text/javascript .js
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.(sql|md)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "same-origin"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; frame-ancestors 'self'"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block any request where ANY path segment starts with a dot — this is
+    # what actually stops /.git/HEAD, /.git/objects/..., /.env, etc. A
+    # FilesMatch rule only sees the final filename, so it would miss all
+    # of these; this checks the whole request path instead.
+    RewriteCond %{REQUEST_URI} (^|/)\. [NC]
+    RewriteRule ^ - [F,L]
+
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>

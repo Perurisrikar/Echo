@@ -1,0 +1,16 @@
+{
+  "name": "Echo — Attendance",
+  "short_name": "Echo",
+  "description": "Check your attendance and plan your absences.",
+  "id": "/",
+  "start_url": "index.php",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F8F2",
+  "theme_color": "#C5D8A4",
+  "icons": [
+    {"src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

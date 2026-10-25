@@ -1,0 +1,18 @@
+# Secrets and per-site settings
+htdocs/private/config.php
+# Real attendance data (names / roll numbers of real students) — never publish
+htdocs/data/attendance.json
+htdocs/data/*.json
+!htdocs/data/attendance.sample.json
+# Uploaded files, sessions and runtime state
+htdocs/private/materials/
+htdocs/private/sessions/
+htdocs/private/*.log
+# Diagnostic helpers (delete from servers too)
+htdocs/upload_check.php
+htdocs/assets/upload_check.js
+# Exports / backups
+*.csv
+*.sql
+*.zip
+.DS_Store
